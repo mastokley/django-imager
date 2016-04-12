@@ -30,15 +30,13 @@ class ImagerProfileModel(TestCase):
         profile_id = new_user_bob.profile.id
         new_user_bob.delete()
 
-        # NOTE: I have not written any delete receiver
         # profile records are apparently being deleted automagically
         with self.assertRaises(ObjectDoesNotExist):
             ImagerProfile.objects.get(id=profile_id)
 
     def test_active_method_setup(self):
         """
-        Does the .active method on ImagerProfile return all active
-        users?
+        Can I manually assign .is_active to False?
         """
         new_user_sally = User.objects.create_user(username='sally')
         new_user_sally.is_active = False
@@ -47,7 +45,7 @@ class ImagerProfileModel(TestCase):
 
     def test_active_method_including(self):
         """
-        Does the .active method on ImagerProfile return all active
+        Does the .active method on ImagerProfile include all active
         users?
         """
         new_user_bob = User.objects.create_user(username='bob')
@@ -56,8 +54,7 @@ class ImagerProfileModel(TestCase):
 
     def test_object_get_query(self):
         """
-        Does the .active method on ImagerProfile return all active
-        users?
+        Does the .objects.all() method on ImagerProfile return all users?
         """
         new_user_susan = User.objects.create_user(username='susan')
         new_user_susan.is_active = False
@@ -67,8 +64,8 @@ class ImagerProfileModel(TestCase):
 
     def test_query_filter_excluding(self):
         """
-        Does the .active method on ImagerProfile return all active
-        users?
+        Does the .objects.all() method on ImagerProfile return all active
+        users and filter in a predictable way?
         """
         new_user_salamander = User.objects.create_user(username='salamander')
         new_user_salamander.is_active = False
@@ -77,13 +74,24 @@ class ImagerProfileModel(TestCase):
         filtered_user_set = all_profiles.filter(user__is_active=True)
         self.assertNotIn(new_user_salamander, filtered_user_set)
 
+    def test_objects_all_returns_intact(self):
+        """
+        When I get susanna back, will she still be set to .is_active = False?
+        """
+        new_user_susanna = User.objects.create_user(username='susanna')
+        new_user_susanna.is_active = False
+        new_user_susanna.save()  # to commit update of attrib.
+        self.assertEquals(new_user_susanna.is_active, False)
+        user_profiles = ImagerProfile.objects.all()
+        self.assertEquals(user_profiles[0].user.is_active, False)
+
     def test_active_excluding(self):
         """
-        Does the .active method on ImagerProfile return all active
+        Does the .active method on ImagerProfile exclude inactive
         users?
         """
-        new_user_susan = User.objects.create_user(username='susan')
-        new_user_susan.is_active = False
-        new_user_susan.save()  # to commit update of attrib.
+        new_user_susanna = User.objects.create_user(username='susanna')
+        new_user_susanna.is_active = False
+        new_user_susanna.save()  # to commit update of attrib.
         active_user_profiles = ImagerProfile.active.all()
-        self.assertNotIn(new_user_susan.profile, active_user_profiles)
+        self.assertNotIn(new_user_susanna.profile, active_user_profiles)
