@@ -34,6 +34,14 @@ REGIONS = (
 )
 
 
+class ImagerProfileManager(models.manager):
+    def get_active_users(self):
+        """Return set of all active users."""
+        users = super(ImagerProfileManager, self).get_queryset()
+        active_users = users.filter(user__is_active=True)
+        return active_users
+
+
 @python_2_unicode_compatible
 class ImagerProfile(models.Model):
     """Profile that stands in front of django's User model."""
@@ -48,19 +56,8 @@ class ImagerProfile(models.Model):
     def __str__(self):
         return self.user.username
 
-    # You must ensure that every standard Django user object created
-    # automatically gets an ImagerProfile.
-
-    # You must also ensure that if a user is deleted from the database, the
-    # ImagerProfile associated with that user is also deleted.
-
-    # should be a class method
-    def active(self):
-        """
-        provides full query functionality limited to profiles for users who are
-        active (allowed to log in)
-        """
-        pass
+    objects = models.Manager()  # return all users
+    active = ImagerProfileManager()  # return only active users
 
     def is_active(self):
         """
