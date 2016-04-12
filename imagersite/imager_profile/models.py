@@ -34,12 +34,11 @@ REGIONS = (
 )
 
 
-class ImagerProfileManager(models.manager):
+class ImagerProfileManager(models.Manager):
     def get_active_users(self):
         """Return set of all active users."""
-        users = super(ImagerProfileManager, self).get_queryset()
-        active_users = users.filter(user__is_active=True)
-        return active_users
+        profiles = super(ImagerProfileManager, self).get_queryset()
+        return profiles.filter(user__is_active=True)
 
 
 @python_2_unicode_compatible

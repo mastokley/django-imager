@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
 
-# Create your tests here.
+
 class ImagerProfileModel(TestCase):
 
     def test_profile_created_for_user(self):
@@ -35,11 +35,55 @@ class ImagerProfileModel(TestCase):
         with self.assertRaises(ObjectDoesNotExist):
             ImagerProfile.objects.get(id=profile_id)
 
-    def test_active_method(self):
+    def test_active_method_setup(self):
+        """
+        Does the .active method on ImagerProfile return all active
+        users?
+        """
+        new_user_sally = User.objects.create_user(username='sally')
+        new_user_sally.is_active = False
+        new_user_sally.save()  # to commit update of attrib.
+        self.assertEquals(new_user_sally.is_active, False)
+
+    def test_active_method_including(self):
         """
         Does the .active method on ImagerProfile return all active
         users?
         """
         new_user_bob = User.objects.create_user(username='bob')
-        new_user_sally = User.objects.create_user(username='sally')
+        active_user_profiles = ImagerProfile.active.all()
+        self.assertIn(new_user_bob.profile, active_user_profiles)
 
+    def test_object_get_query(self):
+        """
+        Does the .active method on ImagerProfile return all active
+        users?
+        """
+        new_user_susan = User.objects.create_user(username='susan')
+        new_user_susan.is_active = False
+        new_user_susan.save()  # to commit update of attrib.
+        all_users = User.objects.all()
+        self.assertIn(new_user_susan, all_users)
+
+    def test_query_filter_excluding(self):
+        """
+        Does the .active method on ImagerProfile return all active
+        users?
+        """
+        new_user_salamander = User.objects.create_user(username='salamander')
+        new_user_salamander.is_active = False
+        new_user_salamander.save()  # to commit update of attrib.
+        all_profiles = ImagerProfile.objects.all()
+        filtered_user_set = all_profiles.filter(user__is_active=True)
+        self.assertNotIn(new_user_salamander, filtered_user_set)
+
+    def test_active_excluding(self):
+        """
+        Does the .active method on ImagerProfile return all active
+        users?
+        """
+        new_user_susan = User.objects.create_user(username='susan')
+        new_user_susan.is_active = False
+        new_user_susan.save()  # to commit update of attrib.
+        active_user_profiles = ImagerProfile.active.all()
+        self.assertNotIn(new_user_susan.profile, active_user_profiles)
