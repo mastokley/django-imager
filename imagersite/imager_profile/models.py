@@ -54,15 +54,17 @@ class ImagerProfile(models.Model):
     def __str__(self):
         return self.user.username
 
-    objects = models.Manager()  # return all users
-    active = ImagerProfileManager()  # return only active users
+    # order is important
+    objects = models.Manager()  # return all user profiles
+    active = ImagerProfileManager()  # return active user profiles
 
+    @property  # can be used with attribute syntax (doesn't want to be called)
     def is_active(self):
-        """
-        a property which returns a boolean value indicating whether the user
-        associated with the given profile is active (allowed to log in)
-        """
+        """Indicate whether the user is active (allowed to log in)"""
         return self.user.is_active
 
+    # friends = models.ManyToManyField(User,
+    #                                  symmetrical=False,
+    #                                  related_name='friend_of')
 
 

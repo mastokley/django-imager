@@ -95,3 +95,12 @@ class ImagerProfileModel(TestCase):
         new_user_susanna.save()  # to commit update of attrib.
         active_user_profiles = ImagerProfile.active.all()
         self.assertNotIn(new_user_susanna.profile, active_user_profiles)
+
+    def test_is_active_method(self):
+        """
+        Does the profile.is_active method return the user.is_active method?
+        """
+        new_user_samuel = User.objects.create_user(username='samuel')
+        new_user_samuel.save()
+        self.assertEqual(new_user_samuel.is_active,
+                         new_user_samuel.profile.is_active)

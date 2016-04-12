@@ -60,3 +60,12 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+/imagersite/db.sqlite3
+/venv/bin/activate
+/venv/bin/activate.csh
+/venv/bin/activate.fish
+/venv/bin/activate_this.py
+/venv/bin/django-admin
+/venv/bin/django-admin.py
+/venv/bin/easy_install
+/venv/bin/easy_install-2.7
