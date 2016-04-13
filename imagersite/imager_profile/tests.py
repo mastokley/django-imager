@@ -71,12 +71,12 @@ class ImagerProfileModel(TestCase):
         new_user_salamander.is_active = False
         new_user_salamander.save()  # to commit update of attrib.
         all_profiles = ImagerProfile.objects.all()
-        filtered_user_set = all_profiles.filter(user__is_active=True)
-        self.assertNotIn(new_user_salamander, filtered_user_set)
+        filtered_profile_set = all_profiles.filter(user__is_active=True)
+        self.assertNotIn(new_user_salamander.profile, filtered_profile_set)
 
     def test_objects_all_returns_intact(self):
         """
-        When I get susanna back, will she still be set to .is_active = False?
+        When I get susanna back, will she still be set to .is_active == False?
         """
         new_user_susanna = User.objects.create_user(username='susanna')
         new_user_susanna.is_active = False

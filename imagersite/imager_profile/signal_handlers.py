@@ -8,6 +8,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @receiver(post_save, sender=User)
 def ensure_user_profile(sender, **kwargs):
     """Create user profile after new user has been created."""
@@ -20,6 +21,7 @@ def ensure_user_profile(sender, **kwargs):
         except (KeyError, ValueError):
             msg = "Unable to create new profile for user {}."
             logger.error(msg.format(user))
+
 
 @receiver(post_delete, sender=User)
 def delete_user_profile(sender, **kwargs):

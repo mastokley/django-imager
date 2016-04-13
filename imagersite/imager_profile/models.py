@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from django.contrib.auth.models import User
+from django.conf import settings
 
 from django.db import models
 
@@ -24,13 +24,13 @@ PHOTOGRAPHY_TYPES = (
 )
 
 REGIONS = (
-    ('Af', 'Africa'),
-    ('An', 'Antarctica'),
-    ('As', 'Asia'),
-    ('Au', 'Australia'),
-    ('Eu', 'Europe'),
-    ('No', 'North America'),
-    ('So', 'South America'),
+    ('af', 'Africa'),
+    ('an', 'Antarctica'),
+    ('as', 'Asia'),
+    ('au', 'Australia'),
+    ('eu', 'Europe'),
+    ('no', 'North America'),
+    ('so', 'South America'),
 )
 
 
@@ -44,7 +44,9 @@ class ImagerProfileManager(models.Manager):
 @python_2_unicode_compatible
 class ImagerProfile(models.Model):
     """Profile that stands in front of django's User model."""
-    user = models.OneToOneField(User, related_name='profile', null=False)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                related_name='profile',
+                                null=False)
     camera = models.CharField(max_length=20, default='')
     photography_type = models.CharField(max_length=2,
                                         choices=PHOTOGRAPHY_TYPES,
@@ -63,7 +65,7 @@ class ImagerProfile(models.Model):
         """Indicate whether the user is active (allowed to log in)"""
         return self.user.is_active
 
-    # friends = models.ManyToManyField(User,
+    # friends = models.ManyToManyField(settings.AUTH_USER_MODEL,
     #                                  symmetrical=False,
     #                                  related_name='friend_of')
 
